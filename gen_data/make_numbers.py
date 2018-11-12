@@ -6,7 +6,7 @@ from PyLinkList import List
 import pdb
 
 MAX_INT = 10000000
-MAX = 1000000
+MAX = 10000000
 
 
 def make_unique_numbers():
