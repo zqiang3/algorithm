@@ -4,12 +4,13 @@
 #include <string.h>
 #include <errno.h>
 
-#define MAX 1250000
-#define MAX_ONE_TIME 10000
-#define TIMES 1000
-char buf[MAX];
-int arr[MAX_ONE_TIME];
-void print_bin(char c);
+#define MAX 1250000          // 125w字节，刚好有1000w个位
+#define MAX_ONE_TIME 10000   // 一次从文件读取数据个数
+#define TIMES 1000           // 重复处理1000次
+
+char buf[MAX];               // 1250000 byte
+int arr[MAX_ONE_TIME];       // 40000 byte
+
 void bit_sort();
 void load_int(int num);
 void print_buf(char *filename);
@@ -23,8 +24,6 @@ int main(int argc, char **argv)
         printf("Usage: <cmd> <filename>\n");
         exit(1);
     }
-    printf("sizeof buf = %d\n", sizeof(buf));
-
 
     int *p;
     char *filename = argv[1];
@@ -35,17 +34,19 @@ int main(int argc, char **argv)
         perror("");
         exit(1);
     }
-    int ti;
-    for(ti = 0; ti < TIMES; ti++)
+
+    int i;
+    for(i = 0; i < TIMES; i++)
     {
         read_numbers(fp);
         bit_sort();
-        
     }
 
     print_buf("out.txt");
 }
 
+
+// 位排序 将int数组的所有数值排序
 void bit_sort()
 {
     int i;
@@ -55,30 +56,29 @@ void bit_sort()
     }
 }
 
+
+// 将num对应的位设为1
 void load_int(int num)
 {
-    if(num == 4)
-    {
-        int a = num;
-        char ccc;
-    }
     int m = num / 8;
     int n = num % 8;
-    char c = buf[m];
-    buf[m] = c | (1 << n);
+    buf[m] = buf[m] | (1 << n);
 }
 
+
+// 输出结果
 void print_buf(char *filename)
 {
-    int i;
-    int j;
-    char c;
     FILE *fp = fopen(filename, "w");
     if(fp == NULL)
     {
         perror("open error");
         exit(1);
     }
+
+    int i;
+    int j;
+    char c;
     int num;
     char temp[8];
     for (i = 0; i < MAX; i++)
@@ -87,7 +87,7 @@ void print_buf(char *filename)
         
         for(j = 0; j< 8; j++)
         {
-            if(c & (1 << j))
+            if(c & (1 << j))   // 若该位为1，表示对应的数字存在
             {
                 num = i * 8 + j;
                 sprintf(temp, "%d", num);
@@ -100,23 +100,8 @@ void print_buf(char *filename)
     fclose(fp);
 }
 
-void print_bin(char c)
-{
-    char b[8];
-    int n = 8;
-    int i;
-    for(i = 0; i < n; i++)
-    {
-        b[i] = c % 2;
-        c >>= 1;
-    }
-    for (i = 7; i >= 0; i--)
-    {
-        printf("%d", b[i]);
-    }
-    printf("\n");
-}
 
+// 一次读取MAX_ONE_TIME个数放到int数组里
 void read_numbers(FILE *fp)
 {
     char temp[9];  // 最后一位填\0, 倒数第二位填\n， 剩余7位对应最大7位数，n < 10000000
@@ -136,6 +121,8 @@ void read_numbers(FILE *fp)
     }
 }
 
+
+// 打印二进制
 void printb(char c)
 {
     char temp[8];
